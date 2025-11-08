@@ -1,7 +1,7 @@
 const { app, BrowserWindow } = require("electron");
 const path = require("path");
 
-app.whenReady().then(() => {
+const createWindow = () => {
     const mainWindow = new BrowserWindow({
         width: 300,
         height: 300,
@@ -10,9 +10,18 @@ app.whenReady().then(() => {
         y: 100,
     });
 
-    console.log(__dirname);
-
-    // mainWindow.webContents.openDevTools();
-
     mainWindow.loadFile(path.resolve(__dirname, "index.html"));
+};
+
+app.whenReady().then(() => {
+    // mainWindow.webContents.openDevTools();
+    createWindow();
+
+    app.on("window-all-closed", () => {
+        if (process.platform != "darwin") app.quit();
+    });
+
+    app.on("activate", () => {
+        createWindow();
+    });
 });
